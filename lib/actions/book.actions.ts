@@ -87,6 +87,28 @@ export const checkBookExists = async (title: string) => {
     }
 }
 
+export const getBookBySlug = async (slug: string) => {
+    try {
+        await connectToDatabase();
+
+        const book = await Book.findOne({ slug }).lean();
+
+        if (!book) {
+            return { success: false, error: 'Book not found' };
+        }
+
+        return {
+            success: true,
+            data: serializeData(book)
+        };
+    } catch (e) {
+        console.error('Error fetching book by slug', e);
+        return {
+            success: false, error: e
+        };
+    }
+}
+
 export const createBook = async (data: CreateBook) => {
     try {
         await connectToDatabase(); // Ensure database connection is established before performing any operations
